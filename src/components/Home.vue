@@ -1,13 +1,13 @@
 <template>
   <div>
-    <el-button type="info" @click="logout">退出</el-button>
+    <el-button type="info" @click="tuichu">退出</el-button>
   </div>
 </template>
 
 <script>
 export default {
   methods: {
-    logout() {
+    tuichu() {
       window.sessionStorage.clear()
       this.$router.push('/login')
     }
