@@ -30,12 +30,12 @@
          :collapse="isCollapse"
          :collapse-transition="false"
          router
-         default-active="/users"
+         :default-active="activePath"
       background-color="#333744"
       text-color="#fff"
       active-text-color="#409EFF">
-      <!-- 11. 在main.js中重定向welcome路由后, 改造二级菜单的路由, 设置router, 重新绑定index值为路径跳转  :index="'/'+subItem.path"-->
-      <!-- 12. 点击二级菜单, 高亮显示 default-active="/users" 不能写死, 需要给二级菜单绑定click事件, 保存index所存入的值 -->
+      <!-- 11. 在main.js中重定向welcome路由后, 改造二级菜单的路由, 设置router属性, 重新绑定index值为路径跳转  :index="'/'+subItem.path"-->
+      <!-- 12. 点击二级菜单, 高亮显示 default-active="/users" 不能写死, 需要给二级菜单绑定click事件, 保存index所存入的值, 根据storage保存这个值, 为了页面刷新时获取  :default-active="activePath" -->
       <!-- 一级菜单 -->
       <!-- 5. 渲染动态数据, 注意 : index都是1,需要动态绑定不同的id, 但必须是字符串, 用拼接法 :index="item.id + ''" -->
       <el-submenu :index="item.id + ''" v-for="item in menulist" :key="item.id">
@@ -77,7 +77,7 @@ export default {
     return {
       // 左侧菜单数据
       menulist: [],
-      //7. 由于一级菜单图标各不一样, 使用element图标已经不满足需求, 需要使用第三方图标, 以id作为key, 图标名为value, 设置对应的鼠标
+      //7. 由于一级菜单图标各不一样, 使用element图标已经不满足需求, 需要使用第三方图标, 以id作为key, 图标名为value, 设置对应的图标, 去main.js导入字体图标
       iconsObj: {
         '125': 'iconfont icon-user',
         '103': 'iconfont icon-tijikongjian',
@@ -118,7 +118,7 @@ export default {
     saveNavState(activePath) {
       //12.3 保存到本地中, 用于页面初始化时对应的二级菜单高亮显示
       window.sessionStorage.setItem('activePath', activePath)
-      //12.4 将path路径存到datazhong
+      //12.4 将path路径存到data中
       this.activePath = activePath
     }
   }

@@ -69,7 +69,8 @@
               placement="top"
               :enterable="false"
             >
-              <el-button type="warning" size="mini" icon="el-icon-setting"></el-button>
+              <el-button type="warning" size="mini" icon="el-icon-setting" @click="setRole(scope.row)"></el-button>
+              <!-- 第三. 绑定click事件 -->
             </el-tooltip>
           </template>
         </el-table-column>
@@ -90,7 +91,8 @@
     </el-card>
 
     <!-- 15.添加用户的对话框 -->
-    <!-- 15.2 分析完结构后给添加用户绑定click事件 -->
+    <!-- 15.1 去data中设置控制添加用户对话框的显示和隐藏 -->
+    <!-- 15.2 分析完结构后给添加用户绑定click事件, 绑定完之后找16项 -->
     <!-- :visible.sync="dialogVisible"对话框的显示和隐藏  -->
     <el-dialog title="添加用户" :visible.sync="dialogVisible" width="50%" @close="addDialogClosed">
       <!-- 17. 当关闭对话框时，重置表单 绑定@close事件 -->
@@ -142,6 +144,33 @@
         <!-- 24.点击修改用户信息 -->
       </span>
     </el-dialog>
+
+    <!--第一. 写完角色列表, 添加分配角色的对话框 -->
+    <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%" @close="setRoleDialogClosed" >
+      <!--  -->
+      <!-- 第五. 获取当前的用户信息 -->
+      <div>
+        <p>当前的用户 : {{ userInfo.username }}</p>
+        <p>当前的角色 : {{ userInfo.role_name }}</p>
+        <!-- 第八, 拷贝select选择器组件, v-model的值去data定义, 为了拿到选中的id值 -->
+        <p>
+          分配新角色
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+        <!-- 第十. 点击确定绑定事件 -->
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -175,7 +204,16 @@ export default {
     }
 
     return {
-      //5.1 获取用户列表的参数对象
+      // 第二. 控制角色对话框的显示和隐藏
+      setRoleDialogVisible: false,
+      //第五. 存储需要被分配角色的用户信息
+      userInfo: {},
+      //第七. 获取用户的角色列表
+      rolesList:[],
+      //第九. 定义被选中的值
+      selectedRoleId:'',
+
+      //5.1 设置用户列表的参数对象
       queryInfo: {
         query: '', //查询字符串
         pagenum: 1, //默认显示第一页
@@ -236,6 +274,42 @@ export default {
     this.getUserList()
   },
   methods: {
+    //第四. 监听点击显示分配角色的对话框
+    async setRole(userInfo){
+      //获取需要被分配的用户信息
+      this.userInfo = userInfo;
+      //第六. 在展示对话框前获取所有的角色列表
+     const {data: res} = await this.$http.get('roles');
+     if(res.meta.status !== 200) return this.$message.error("获取角色失败");
+     //保存角色列表到data中
+     this.rolesList = res.data;
+
+      //显示
+      this.setRoleDialogVisible = true;
+    },
+    //第十一. 监听确定按钮分配角色
+    async saveRoleInfo(){
+      //判断
+      if(!this.selectedRoleId)return this.$message.info("请选择");
+      //请求数据1.3.7接口
+      const {data: res} = await this.$http.put(`users/${this.userInfo.id}/role`,{
+        rid: this.selectedRoleId
+      });
+      if(res.meta.status !== 200) return this.$message.error('更新角色失败');
+
+      this.$message.success('更新角色成功!');
+      //再初始化数据
+      this.getUserList();
+      //第十二. 优化监听弹框关闭时, 重置数据, 去绑定@close事件
+
+      this.setRoleDialogVisible = false
+    },
+    //第十三. 监听弹框关闭
+    setRoleDialogClosed(){
+      this.selectedRoleId = '',
+      this.userInfo = {};
+    },
+
     //5. 获取用户列表数据
     async getUserList() {
       const { data: res } = await this.$http.get('users', {
@@ -340,7 +414,7 @@ export default {
         this.$message.success('更新用户成功')
       })
     },
-    //25.1 点击根据id删除
+    //25.1 点击根据id删除, 弹消息确认框, 根据官方文档按需引入
     async removeUserById(id) {
       //去官网复制代码
       const confirmResult = await this.$confirm(
@@ -356,18 +430,18 @@ export default {
       //console.log(confirmResult) // 是promise, 通过async简化其操作, 再打印测试, 返回字符串, 点击取消报错. 用catch方法捕获去错误操作
       //如果用户点击确认，则confirmResult 为'confirm'
       //如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
-      if(confirmResult !== 'confirm'){
-       return  this.$message.info("已取消删除")
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已取消删除')
       }
       //console.log("你想删除");
       //发请求
-     const {data: res} = await this.$http.delete("users/"+id)
+      const { data: res } = await this.$http.delete('users/' + id)
 
-     if(res.meta.status !== 200) return this.$message.error("删除失败");
+      if (res.meta.status !== 200) return this.$message.error('删除失败')
 
-     this.$message.success("删除成功");
-     //刷新数据
-     this.getUserList();
+      this.$message.success('删除成功')
+      //刷新数据
+      this.getUserList()
     }
   }
 }
