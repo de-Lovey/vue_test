@@ -147,7 +147,6 @@
 
     <!--第一. 写完角色列表, 添加分配角色的对话框 -->
     <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%" @close="setRoleDialogClosed" >
-      <!--  -->
       <!-- 第五. 获取当前的用户信息 -->
       <div>
         <p>当前的用户 : {{ userInfo.username }}</p>
@@ -156,6 +155,7 @@
         <p>
           分配新角色
           <el-select v-model="selectedRoleId" placeholder="请选择">
+            <!-- 第九.其data中 定义被选中的值, 为了点击确认传参 -->
             <el-option
               v-for="item in rolesList"
               :key="item.id"
@@ -274,11 +274,11 @@ export default {
     this.getUserList()
   },
   methods: {
-    //第四. 监听点击显示分配角色的对话框
+    //第四. 监听点击显示分配角色的对话框, 传实参, 用户信息scope.row
     async setRole(userInfo){
-      //获取需要被分配的用户信息
+      //获取需要被分配的用户信息, 传参, 并渲染在页面
       this.userInfo = userInfo;
-      //第六. 在展示对话框前获取所有的角色列表
+      //第六. 在展示对话框前获取所有的角色列表1.5.1
      const {data: res} = await this.$http.get('roles');
      if(res.meta.status !== 200) return this.$message.error("获取角色失败");
      //保存角色列表到data中

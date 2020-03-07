@@ -7,8 +7,11 @@ import Home from './components/Home.vue'
 import Welcome from './components/welcome.vue'
 //3. 创建users页面, 并导入
 import Users from './components/users/Users.vue'
+//导入
 import Rights from './components/power/Rights.vue'
 import Roles from './components/power/Roles.vue'
+//商品
+import Cate from './components/goods/Cate.vue'
 
 Vue.use(Router)
 
@@ -25,6 +28,7 @@ const router = new Router({
                 { path: '/users', component: Users },
                 { path: '/rights', component: Rights },
                 { path: '/roles', component: Roles },
+                { path: '/categories', component: Cate },
 
             ]
         }
