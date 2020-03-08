@@ -7,7 +7,7 @@ import './assets/fonts/iconfont.css'
 // 导入全局样式表
 import './assets/css/global.css'
 
-//导入table表格插件-------------------------
+//导入table表格插件-------------------------------------------------
 import ZkTable from 'vue-table-with-tree-grid'
 Vue.component('tree-table', ZkTable)
 

@@ -20,7 +20,7 @@
       <!-- 9. 根据github中的example中的例子, 配置表格分类, 注意columns属性
 :data(设置数据源) :columns(设置表格中列配置信息) :selection-type(是否有复选框)
 :expand-type(是否展开数据) show-index(是否设置索引列) index-text(设置索引列头)
-      border(是否添加纵向边框) :show-row-hover(是否鼠标悬停高亮)-->
+      border(是否添加纵向边框) :show-row-hover(是否鼠标悬停高亮), 禁止掉-->
       <tree-table
         class="treeTable"
         :data="cateList"
@@ -34,7 +34,7 @@
       >
         <!-- 11. 定义模板列, 用slot="isok"申明模板名 -->
         <template slot="isok" slot-scope="scope">
-          <!-- 12. 使用列表中的cat_deleted的布尔值来按需设置, if判断 -->
+          <!-- 12. 第二列模板, 使用列表中的cat_deleted的布尔值来按需设置, if判断 -->
           <i
             class="el-icon-success"
             v-if="scope.row.cat_deleted === false"
@@ -87,8 +87,8 @@
           <el-input v-model="addCateForm.cat_name"></el-input>
         </el-form-item>
         <!-- 28.页面测试后, 再添加一个item项 -->
-        <el-form-item label="父级名称:" prop="cat_name">
-          <!-- 31. 找Cascader练级选择器组件, 复制hover例子 -->
+        <el-form-item label="父级名称:">
+          <!-- 31. 找Cascader连级选择器组件, 复制hover例子 -->
           <!--expand-trigger="hover"悬浮效果 
           options指定数据源 props指定配置对象, 去data中定义对象
           v-model绑定要选中的值,必须是数组, 例:选择大家电中的电视, 要存当前两个id值 
@@ -170,7 +170,7 @@ export default {
       parentCateList: [],
       //32. 定义联动中的配置对象
       cascaderProps: {
-        value: 'cat_id', //指定选项的值
+        value: 'cat_id', //指定选项的id值
         label: 'cat_name', //指定显示的值
         children: 'children', //指定子级属性
         expandTrigger: 'hover' //移入展开次级菜单
@@ -192,7 +192,7 @@ export default {
         return this.$message.error('获取商品分类失败')
       //成功, 则保存到data中
       this.cateList = res.data.result
-      //7. 保存总数据
+      //7. 保存总条数
       this.total = res.data.total
     },
     //18.监听pagesize变化
@@ -236,7 +236,7 @@ export default {
         ]
         //36. 分类传参的层级根据数组长度判断
         this.addCateForm.cat_level = this.selectedKeys.length
-        return
+        return;
       } else {
         //否则, 再重新赋值为0
         this.addCateForm.cat_pid = 0
