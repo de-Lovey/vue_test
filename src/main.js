@@ -11,6 +11,22 @@ import './assets/css/global.css'
 import ZkTable from 'vue-table-with-tree-grid'
 Vue.component('tree-table', ZkTable)
 
+//导入富文本编辑器==============================================
+import VueQuillEditor from 'vue-quill-editor'
+//导入富文本编辑器对应的样式
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+//全局注册富文本组件
+Vue.use(VueQuillEditor)
+
+//在开发依赖中下载moment.js, 然后导入
+import moment from 'moment';
+//渲染商品列表时,   全局注册格式化时间的过滤器
+Vue.filter('dateFormat', function(originVal) {
+    return moment(originVal).format("YYYY-MM-DD hh:mm:ss");
+})
+
 
 import axios from 'axios'
 // 配置请求的跟路径

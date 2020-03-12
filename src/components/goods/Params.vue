@@ -27,7 +27,7 @@
         </el-col>
       </el-row>
 
-      <!-- 11.找tabs标签页组件复制, v-model="activeName" 被激活页签的名称,去data定义默认选中标签页-->
+      <!-- 11.找tabs标签页组件复制, v-model="activeName" 被选中页签的名称,去data定义默认选中标签页-->
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <!-- 添加动态参数的面板 -->
         <el-tab-pane label="动态参数" name="many">
@@ -44,7 +44,7 @@
             <!-- 展开行 -->
             <el-table-column type="expand">
               <!-- 41. 渲染标签, 添加closable关闭属性 -->
-              <!-- 42. 优化, 当点击新增属性时,会出现多余的标签, 去forEach中判断一下 -->
+              <!-- 42. 优化, 测试当点击新增动态参数时,会出现多余的标签, 去forEach中判断一下 -->
               <template slot-scope="scope">
                 <el-tag closable v-for="(item,i) in scope.row.attr_vals" :key="i" @close="handleClose(i,scope.row)">{{ item }}</el-tag>
                 <!-- 43.导入动态编辑标签结构, 然后梳理结构,去data中定义v-if中的inputVisible, 和v-model中的inputValue, 暂时不写scope.row -->
@@ -93,7 +93,7 @@
             size="mini"
             :disabled="isBtnDisabled"
           >添加属性</el-button>
-          <!-- 22.复制动态参数表格---静态表格-->
+          <!-- 22.复制动态参数表格---静态表格. 23.点击添加参数的对话框-->
           <el-table :data="onlyTableData" border stripe>
             <!-- 58. 复制动态参数的展开行, 测试即可 -->
             <el-table-column type="expand">
@@ -162,16 +162,14 @@
       </span>
     </el-dialog>
 
-    <!-- 32.点击修改参数的对话框 -->
+    <!-- 32.点击修改参数的对话框, 复制添加参数的对话框, 选中add, ctrl+d, 全部换成edit -->
     <el-dialog
       :title="'修改'+titleText"
       :visible.sync="editDialogVisible"
       width="50%"
       @close="editDialogClosed"
     >
-      <!-- 27.复制带有验证的表单组件的前四行 -->
       <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="100px">
-        <!-- prop的值应该与提交数据时设置的参数名一致 -->
         <el-form-item :label="titleText" prop="attr_name">
           <el-input v-model="editForm.attr_name"></el-input>
         </el-form-item>
@@ -198,7 +196,7 @@ export default {
       },
       //8. 级联选择框双向绑定到的数组
       selectedCateKeys: [],
-      //12.被激活页签的名称, 默认值
+      //12.被激活页签的名称, 默认值  //13.监听tab页签点击事件
       //   activeName:'first',
       activeName: 'many',
       //动态参数的数据
@@ -217,6 +215,7 @@ export default {
           { required: true, message: '请输入参数名称', trigger: 'blur' }
         ]
       },
+      //29. 关闭对话框时, 重置表单@close
       //33. 控制修改弹框的显示与隐藏
       editDialogVisible: false,
       //34. 用@close事件重置表单
@@ -255,7 +254,7 @@ export default {
         //57.最后的最后,优化若再次选择商品分类的只选择了2级,则需要清空两个表格
         this.manyTableData = [];
         this.onlyTableData = [];
-        return
+        return; //11.找tabs标签页组件复制
       }
       //18. 根据所选id和对应面板发请求1.7.1
       const { data: res } = await this.$http.get(
@@ -268,16 +267,17 @@ export default {
       )
       if (res.meta.status !== 200)
         return this.$message.error('获取参数列表失败')
-      //成功则打印测试
+      //成功则打印测试, //19. 点击标签页的函数中也需要获取新的数据, 调用
 
       //40. 分析展开行的数据, 有多个标签, 而我们获取的数据是字符串, 改造成数组
       //   console.log(res.data);
+      //41. 改造完成后渲染标签
       res.data.forEach(item => {
         //   item.attr_vals = item.attr_vals.split(",")
         // 42. 优化, 当点击新增属性时,会出现多余的标签, 去forEach中判断一下
         item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : [];
 
-        //47. 优化:给每一个item添加控制文本框的属性和值
+        //47. 优化:给每一个item添加控制文本框显示隐藏的属性和对应值的属性
         item.inputVisible = false;
         item.inputValue = '';
         //48. 优化结构的v-if="scope.row.inputVisible" 和v-value
@@ -300,7 +300,7 @@ export default {
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
     },
-    //30.点击确定按钮添加参数
+    //30.点击确定按钮添加参数1.7.2
     addParams() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return
@@ -318,7 +318,7 @@ export default {
         this.addDialogVisible = false
       })
     },
-    //31.给两个面板中的编辑都绑定click事件
+    //31.给两个面板中的编辑都绑定click事件, 32.点击编辑按钮新建对话框
     async showEditDialog(attr_id) {
       //38. 点击编辑弹框的结构都梳理完之后, 分析接口中根据id获取当前数据, 传scope.row.attr_id, 发请求1.7.4
       const { data: res } = await this.$http.get(
@@ -355,7 +355,7 @@ export default {
         //成功则刷新数据
         this.$message.success('修改参数成功')
         this.handleChange()
-        this.editDialogVisible = false
+        this.editDialogVisible = false; //完成后点击删除
       })
     },
     //38.点击根据id删除数据1.7.3
@@ -401,7 +401,7 @@ export default {
         const {data: res} = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`, {
             attr_name: row.attr_name,
             attr_sel: row.attr_sel,
-            attr_vals: row.attr_vals.join(',')
+            attr_vals: row.attr_vals.join(',') //要注意:数据库中的vals以字符串显示的, 得转换
         })
         if(res.meta.status !== 200) return this.$message.error("修改参数失败");
         //成功
@@ -409,7 +409,7 @@ export default {
 
 
     },
-    //46.点击按钮, 展示文本输入框,50形参接收(注: 优化后再传参)
+    //46.点击按钮, 展示文本输入框,50. 形参接收(注: 优化后再传参)
     showInput(row){
         //this.inputVisible = true;// 显示
         //测试后发现, 同时在给两个tag中的input设置文字,去forEach中优化一下
@@ -448,8 +448,7 @@ export default {
   computed: {
     //15. 如果按钮需要被禁用, 则返回true, 否则返回false
     isBtnDisabled() {
-      if (this.selectedCateKeys.length !== 3) return true
-      return false
+      return this.selectedCateKeys.length !== 3 ? true : false;
     },
     //16.因为要通过接口1.7.1获取参数列表, 通过computed定义方法来 , 获取当前选中的id
     //17. 再次分析接口参数, 根据当前选中的面板而传many还是only,改造面板的name名和data中activeName的默认选中名
