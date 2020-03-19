@@ -27,7 +27,7 @@
       </el-row>
 
       <!-- 6.table组件 用户列表区域 -->
-      <el-table :data="userlist" border>
+      <el-table :data="userlist" border row-key="id">
         <!-- 7.添加索引列 type="index" -->
         <el-table-column type="index"></el-table-column>
         <el-table-column label="姓名" prop="username"></el-table-column>

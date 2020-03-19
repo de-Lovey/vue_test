@@ -1,26 +1,41 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from './components/Login.vue'
-import Home from './components/Home.vue'
-//1. 制作侧边栏伸缩功能后, 在后台首页添加子级路由, 在进入到home页面时, 直接重定向到welcome页面
-//2. 回到home页面改造二级菜单的路由, 在官网上找router属性, 开启路由
-import Welcome from './components/welcome.vue'
-//3. 创建users页面, 并导入
-import Users from './components/users/Users.vue'
-//导入
-import Rights from './components/power/Rights.vue'
-import Roles from './components/power/Roles.vue'
-//商品
-import Cate from './components/goods/Cate.vue'
-//参数管理
-import Params from './components/goods/Params.vue'
-//商品列表
-import GoodsList from './components/goods/List.vue'
-//添加商品组件
-import AddGoods from './components/goods/Add.vue'
-//订单组件
-import Order from './components/order/Order.vue'
-import Report from './components/report/Report.vue'
+const Login = () =>
+    import ( /* webpackChunkName:"login_home_welcome" */ './components/Login.vue')
+    // import Login from './components/Login.vue'
+const Home = () =>
+    import ( /* webpackChunkName:"login_home_welcome" */ './components/Home.vue')
+    // import Home from './components/Home.vue'
+const Welcome = () =>
+    import ( /* webpackChunkName:"login_home_welcome" */ './components/Welcome.vue')
+    // import Welcome from './components/Welcome.vue'
+const Users = () =>
+    import ( /* webpackChunkName:"user" */ './components/user/Users.vue')
+    // import Users from './components/user/Users.vue'
+const Rights = () =>
+    import ( /* webpackChunkName:"power" */ './components/power/Rights.vue')
+    // import Rights from './components/power/Rights.vue'
+const Roles = () =>
+    import ( /* webpackChunkName:"power" */ './components/power/Roles.vue')
+    // import Roles from './components/power/Roles.vue'
+const Cate = () =>
+    import ( /* webpackChunkName:"goods" */ './components/goods/Cate.vue')
+    // import Cate from './components/goods/Cate.vue'
+const Params = () =>
+    import ( /* webpackChunkName:"goods" */ './components/goods/Params.vue')
+    // import Params from './components/goods/Params.vue'
+const GoodList = () =>
+    import ( /* webpackChunkName:"goods" */ './components/goods/List.vue')
+    // import GoodList from './components/goods/List.vue'
+const GoodAdd = () =>
+    import ( /* webpackChunkName:"goods" */ './components/goods/Add.vue')
+    // import GoodAdd from './components/goods/Add.vue'
+const Order = () =>
+    import ( /* webpackChunkName:"order" */ './components/order/Order.vue')
+    // import Order from './components/order/Order.vue'
+const Report = () =>
+    import ( /* webpackChunkName:"report" */ './components/report/Report.vue')
+    // import Report from './components/report/Report.vue'
 
 
 
@@ -41,8 +56,8 @@ const router = new Router({
                 { path: '/roles', component: Roles },
                 { path: '/categories', component: Cate },
                 { path: '/params', component: Params },
-                { path: '/goods', component: GoodsList },
-                { path: '/goods/add', component: AddGoods },
+                { path: '/goods', component: GoodList },
+                { path: '/goods/add', component: GoodAdd },
                 { path: '/orders', component: Order },
                 { path: '/reports', component: Report },
 

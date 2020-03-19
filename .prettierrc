@@ -1,5 +1,7 @@
 {
   "semi": false,
   "singleQuote": true,
-  "indent":[2,4,6,8,10]
+  "indent":[2,4,6,8,10],
+  "printWidth":200,
+  "spaced-comment": "never"
 }

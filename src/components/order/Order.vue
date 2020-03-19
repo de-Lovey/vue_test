@@ -43,7 +43,7 @@
           </template>
         </el-table-column>
         <el-table-column label="操作">
-          <template slot-scope="scope">
+          <template>
               <!-- 8.点击修改, 展示对话框 -->
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="showBox"></el-button>
             <el-button size="mini" type="success" icon="el-icon-location" @click="showProgressBox"></el-button>

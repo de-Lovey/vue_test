@@ -16,7 +16,7 @@
         </el-col>
       </el-row>
       <!--4.渲染角色列表区域 ,el-table-column渲染列  -->
-      <el-table :data="rolelist" border stripe>
+      <el-table :data="rolelist" border stripe row-key="id">
         <!-- 6. 添加展开列 -->
         <el-table-column type="expand">
           <!-- 7.使用作用于插槽 -->

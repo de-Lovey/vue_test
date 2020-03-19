@@ -16,7 +16,7 @@
 </template>
 
 <script>
-// 3. 导入 echarts
+// 3. 下载运行依赖echarts.js , 然后导入 echarts
 import echarts from 'echarts'
 import _ from 'lodash'
 
