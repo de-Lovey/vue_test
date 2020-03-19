@@ -38,9 +38,10 @@
           :before-leave="beforeTabLeave"
           @tab-click="tabClicked"
         >
-          <!-- 7.更改label显示的文本后, 实现商品联动: 分析后, 通过name设置对应的索引, 通过v-model绑定你点击时对应的索引,即可以直接绑定到activeIndex这个属性上,让他们公用一个属性, 而步骤条中的active必须是number属性, 使用 activeIndex - 0方法 -->
+          <!-- 7.更改label显示的文本后, 实现商品联动: 分析后, 通过name设置对应的索引, 通过v-model绑定你点击时对应的索引,即可以直接绑定到activeIndex这个属性上,让他们共用一个属性, 而步骤条中的active必须是number属性, 使用 activeIndex - 0方法 -->
           <el-tab-pane label="基本参数" name="0">
             <!-- 10. 根据要提交的参数,设置prop属性, 和设置验证对象 -->
+            <!-- 11.调接口获取商品分类列表 -->
             <el-form-item label="商品名称" prop="goods_name">
               <el-input v-model="addForm.goods_name"></el-input>
             </el-form-item>
@@ -83,7 +84,7 @@
           </el-tab-pane>
           <el-tab-pane label="商品图片" name="3">
             <!-- 23.复制Upload图片列表缩略图结构 -->
-            <!-- action:表示图片要上传到后台的api地址,在data中定义, 然后再定义两个事件,  list-type="picture" 定义文件的类型-->
+            <!-- action:表示图片要上传到后台的api地址,在data中定义, 然后再定义两个事件,  第24, 第25就是这两个事件, list-type="picture" 定义文件的类型-->
             <el-upload
               :action="uploadURL"
               :on-preview="handlePreview"
@@ -97,7 +98,7 @@
             </el-upload>
           </el-tab-pane>
           <el-tab-pane label="商品内容" name="4">
-            <!-- 38.下载运行依赖,富文本插件vue-quill-editor, 打开详情进入github, 去main.js导入, 复制组件结构, 去全局设置高度 -->
+            <!-- 38.下载运行依赖,富文本插件vue-quill-editor, 打开详情进入github, 去main.js导入, 复制组件结构, 去全局设置高度 .ql-editor { min-height: 300px;} -->
             <quill-editor  v-model="addForm.goods_introduce" />
             <!-- 使用v-model绑定添加商品接口地址的参数, 介绍参数, 去data定义 -->
             <!-- 39.添加商品按钮 -->
@@ -171,7 +172,7 @@ export default {
       //静态属性数据
       onlyTableData: [],
       //上传图片的url地址
-      uploadURL: 'http://127.0.0.1:8888/api/private/v1/upload',
+      uploadURL: 'http://127.0.0.1:8888/api/private/v1/upload',//设置完之后27.监听图片上传成功的事件
       //图片上传组件的headers请求头对象
       headerObj: {
         Authorization: window.sessionStorage.getItem('token')
@@ -204,7 +205,7 @@ export default {
         return
       }
     },
-    //14. 监听标签页切换的行为, 通过在组件的属性中分析完之后, 给tab添加beforeTabLeave属性
+    //14. 监听标签页切换的行为, 通过在组件的属性中分析完之后, 给tab添加:beforeTabLeave属性 :before-leave="beforeTabLeave"
     beforeTabLeave(activeName, oldActiveName) {
       // console.log("即将离开标签页的名字是:"+ oldActiveName);
       // console.log("即将进入标签页的名字是:"+ activeName);
@@ -215,10 +216,9 @@ export default {
         return false
       }
     },
-    //15.通过文档给tab标签@tab-click="tabClicked"绑定, 监听tab被选中时触发
+    //15.通过文档给tab标签@tab-click="tabClicked"绑定, 监听tab被选中时触发, 
     async tabClicked() {
       // console.log(this.activeIndex);//拿到对应的name值
-      //判断: 如果等于1, 证明访问的是动态参数面板
       if (this.activeIndex === '1') {
         //16.发请求 : 1.7.1, 该参数列表默认应该为动态参数
         //分类id建议用计算属性获取
@@ -265,7 +265,8 @@ export default {
       this.previewPath = file.response.data.url
       //35.去赋值Dialog弹框
       //37.点击打开弹框
-      this.previewVisible = true
+      this.previewVisible = true;
+      //38.下载运行依赖,富文本插件
     },
     //25.处理移除图片的操作
     handleRemove(file) {
@@ -278,7 +279,7 @@ export default {
       this.addForm.pics.splice(i, 1)
       console.log(this.addForm)
     },
-    //27.监听图片上传成功的事件, 拿到图片的地址
+    //27.监听图片上传成功的事件, 拿到图片的地址, :on-success="handleSuccess"
     handleSuccess(res) {
       // console.log(res);
       //28. 在data中的addForm对象中定义和后台一致的参数pics:[]
@@ -316,7 +317,7 @@ export default {
                 const newInfo = {
                     attr_id: item.attr_id,
                     attr_value: item.attr_vals
-                    //静态属性的value值就是一个字符串
+                    //静态属性的value值就是一个字符串, 不需要拼接
                 }
                 this.addForm.attrs.push(newInfo);
             });

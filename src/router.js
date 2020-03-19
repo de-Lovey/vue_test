@@ -18,6 +18,8 @@ import Params from './components/goods/Params.vue'
 import GoodsList from './components/goods/List.vue'
 //添加商品组件
 import AddGoods from './components/goods/Add.vue'
+//订单组件
+import Order from './components/order/Order.vue'
 
 Vue.use(Router)
 
@@ -38,6 +40,8 @@ const router = new Router({
                 { path: '/params', component: Params },
                 { path: '/goods', component: GoodsList },
                 { path: '/goods/add', component: AddGoods },
+                { path: '/orders', component: Order },
+
 
             ]
         }

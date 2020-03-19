@@ -11,7 +11,7 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="8">
-          <!-- 3.复制带有搜索按钮的input组件结构 -->
+          <!-- 3.复制带有搜索按钮的input组件结构, v-model暂时不考虑  -->
           <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getGoodsList">
               <!-- 9.点击搜索功能,使用v-model绑定关键字, 点击再次触发, 使用clearable属性,调用@clear事件再再次触发 -->
             <el-button slot="append" @click="getGoodsList" icon="el-icon-search"></el-button>
@@ -21,7 +21,7 @@
           <el-button type="primary" @click="goAddpage">添加商品</el-button>
         </el-col>
       </el-row>
-
+      <!-- 4. 调接口, 获取表单数据 -->
       <!-- 5.渲染table表格区域 -->
       <el-table :data="goodsList" border stripe>
         <el-table-column type="index"></el-table-column>
